@@ -20,7 +20,7 @@ jobs:
     env:
       DB_DATABASE: alurafood-pagamento
       DB_USER: root
-      DB_PASSWORD: local-root-password
+      DB_PASSWORD: root
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
