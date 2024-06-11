@@ -15,10 +15,21 @@ on:
     branches: [ "master" ]
 
 jobs:
-  build:
-
+  pre:
     runs-on: ubuntu-latest
-
+    env:
+      DB_DATABASE: alurafood-pagamento
+      DB_USER: root
+      DB_PASSWORD: local-root-password
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Start MySQL
+        run: |
+          sudo /etc/init.d/mysql start
+          mysql -e "CREATE DATABASE IF NOT EXISTS $DB_DATABASE;" -u$DB_USER -p$DB_PASSWORD
+  build:
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - name: Set up JDK 17
