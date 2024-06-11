@@ -18,7 +18,7 @@ jobs:
   pre:
     runs-on: ubuntu-latest
     env:
-      DB_DATABASE: alurafood-pagamento
+      DB_DATABASE: alurafood_pagamento
       DB_USER: root
       DB_PASSWORD: root
     steps:
