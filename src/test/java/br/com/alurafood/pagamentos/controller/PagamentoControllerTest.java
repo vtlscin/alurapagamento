@@ -3,14 +3,15 @@ package br.com.alurafood.pagamentos.controller;
 import br.com.alurafood.pagamentos.dto.PagamentoDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -19,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.math.BigDecimal;
+import java.sql.SQLException;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -29,9 +31,16 @@ class PagamentoControllerTest {
     @Autowired
     private MockMvc mvc;
 
+    @BeforeAll
+    public static void initTest(@Autowired Flyway flyway) throws SQLException {
+        //flyway.clean();
+        flyway.migrate();
+//        Server.createWebServer("-web", "-webAllowOthers", "-webPort", "8082")
+//                .start();
+    }
+
     @Test
     @DisplayName("Deveria devolver 200 no listar todos")
-    @Order(1)
     public void devolveCodigo200ListarTodos() throws Exception {
 
         //ARRANGE + ACT
@@ -47,7 +56,6 @@ class PagamentoControllerTest {
 
     @Test
     @DisplayName("Deveria devolver 200 no criar")
-    @Order(2)
     public void devolveCodigo200Criar() throws Exception {
 
         PagamentoDto dto = new PagamentoDto(BigDecimal.TEN,"Thiago","12345678","10/29","123"
@@ -72,7 +80,6 @@ class PagamentoControllerTest {
 
     @Test
     @DisplayName("Deveria devolver 200 no detalhar")
-    @Order(3)
     public void devolveCodigo200Detalhar() throws Exception {
 
         //ARRANGE + ACT
