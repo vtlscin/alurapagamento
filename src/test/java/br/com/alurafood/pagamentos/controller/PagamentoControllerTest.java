@@ -1,9 +1,11 @@
 package br.com.alurafood.pagamentos.controller;
 
 import br.com.alurafood.pagamentos.dto.PagamentoDto;
+import br.com.alurafood.pagamentos.model.Status;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import org.flywaydb.core.Flyway;
+import org.h2.tools.Server;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -33,7 +35,7 @@ class PagamentoControllerTest {
 
     @BeforeAll
     public static void initTest(@Autowired Flyway flyway) throws SQLException {
-        //flyway.clean();
+        flyway.clean();
         flyway.migrate();
 //        Server.createWebServer("-web", "-webAllowOthers", "-webPort", "8082")
 //                .start();
@@ -85,11 +87,50 @@ class PagamentoControllerTest {
         //ARRANGE + ACT
         MockHttpServletResponse response = mvc.perform(
                 MockMvcRequestBuilders
-                        .get("/pagamentos/1")
+                        .get("/pagamentos/2")
         ).andReturn().getResponse();
 
         //ASSERT
         Assertions.assertEquals(HttpStatus.OK.value(), response.getStatus());
+
+    }
+
+    @Test
+    @DisplayName("Deveria devolver 200 no atualizar")
+    public void devolveCodigo200Atualizar() throws Exception {
+
+        PagamentoDto dto = new PagamentoDto(BigDecimal.TEN,"Thiago","12345678","10/29","123"
+                , Status.CANCELADO,1L,1L);
+
+        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        String json = ow.writeValueAsString(dto);
+
+
+        //ARRANGE + ACT
+        MockHttpServletResponse response = mvc.perform(
+                MockMvcRequestBuilders
+                        .put("/pagamentos/1")
+                        .content(json)
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andReturn().getResponse();
+
+        //ASSERT
+        Assertions.assertEquals(HttpStatus.OK.value(), response.getStatus());
+
+    }
+
+    @Test
+    @DisplayName("Deveria devolver 200 no remover")
+    public void devolveCodigo200Remover() throws Exception {
+
+        //ARRANGE + ACT
+        MockHttpServletResponse response = mvc.perform(
+                MockMvcRequestBuilders
+                        .delete("/pagamentos/1")
+        ).andReturn().getResponse();
+
+        //ASSERT
+        Assertions.assertEquals(HttpStatus.NO_CONTENT.value(), response.getStatus());
 
     }
 
